@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Devis Carrelage Express - Loire 42</title>
+<style>
+:root{--navy:#0B1B33;--gold:#C9A227;--bg:#F2F0E8;--card:#fff;--muted:#6b7280}
+*{box-sizing:border-box}body{margin:0;font-family:system-ui,sans-serif;background:var(--bg);color:#111}
+header{background:var(--navy);color:#fff;padding:18px 14px;position:sticky;top:0;z-index:10}
+header h1{margin:0;font-size:22px}header h1 span{color:var(--gold)}header p{margin:4px 0 0;color:#cbd5e1;font-size:13px}
+.wrap{max-width:1080px;margin:0 auto;padding:14px}
+.card{background:var(--card);border-radius:14px;padding:16px;margin-bottom:14px;box-shadow:0 2px 10px rgba(0,0,0,.06);border-top:4px solid var(--gold)}
+h2{margin:0 0 10px;font-size:18px;color:var(--navy)}h3{margin:14px 0 8px;color:var(--navy)}
+label{font-size:13px;color:#374151;display:block;margin:8px 0 4px}input,select,textarea{width:100%;padding:10px;border:1px solid #d1d5db;border-radius:10px;font-size:15px}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px}.grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px}
+@media(max-width:640px){.grid2,.grid3{grid-template-columns:1fr}}
+.btn{background:var(--navy);color:var(--gold);border:0;padding:12px 16px;border-radius:12px;font-weight:700;cursor:pointer;width:100%;margin-top:10px}
+.btn-gold{background:var(--gold);color:var(--navy)}.btn-ghost{background:#eef2f7;color:var(--navy)}
+details{border:1px solid #e5e7eb;border-radius:12px;padding:10px;margin-bottom:10px;background:#fff}
+summary{cursor:pointer;font-weight:700;color:var(--navy);font-size:16px}
+.row{display:grid;grid-template-columns:28px 1fr 80px 110px 90px;gap:8px;align-items:center;padding:8px 0;border-bottom:1px solid #f3f4f6}
+@media(max-width:640px){.row{grid-template-columns:28px 1fr;}}
+.row.locked{opacity:.55;background:#fef9c3}.badge{font-size:11px;background:#fef3c7;color:#92400e;padding:2px 6px;border-radius:999px}
+table{width:100%;border-collapse:collapse;font-size:14px}th,td{padding:8px;border-bottom:1px solid #eee;text-align:left}
+.tot{font-size:18px;font-weight:800}.muted{color:var(--muted);font-size:13px}.ok{color:#15803d;font-weight:700}
+.forfait{border:2px solid var(--gold);background:#FFFBEB;border-radius:12px;padding:12px}
+.pill{display:inline-block;padding:8px 10px;border:2px solid #ddd;border-radius:999px;cursor:pointer;margin:4px 4px 0 0;font-weight:700}.pill.on{background:var(--navy);color:var(--gold);border-color:var(--navy)}
+</style></head><body>
+<header><h1>Devis Carrelage Express <span>- Loire 42</span></h1><p>Pose collee - Pose scellee - Terrasses - Douches - DTU 52.1 / 52.2 - Bleu nuit et dore</p></header>
+<div class="wrap">
+<div class="card"><h2>1. Mon entreprise</h2><div class="grid2">
+<div><label>Nom entreprise</label><input id="ent" value="Hanifi Sal - Carrelage"></div>
+<div><label>SIRET</label><input id="siret" placeholder="SIRET"></div>
+<div><label>Telephone</label><input id="tel" placeholder="06 ..."></div>
+<div><label>Email</label><input id="email" placeholder="email"></div>
+<div><label>Adresse</label><input id="adr" value="Sury-le-Comtal (42)"></div>
+<div><label>TVA</label><select id="tva"><option value="0.10">10%</option><option value="0.055">5,5%</option><option value="0.20">20%</option></select></div>
+</div><label>Logo (nom de fichier, ex: logo.png)</label><input id="logo" value="logo.png"></div>
+<div class="card"><h2>2. Client et chantier</h2><div class="grid2">
+<div><label>Client</label><input id="client" placeholder="Nom du client"></div>
+<div><label>Adresse chantier</label><input id="chantier" placeholder="Adresse du chantier"></div>
+<div><label>Date</label><input id="date" type="date"></div>
+<div><label>N devis</label><input id="num" value="DEV-2026-001"></div>
+</div><label>Description</label><textarea id="desc" rows="2" placeholder="Ex : Salle de bain complete + sol sejour"></textarea>
+<p class="muted">Mode facturation :</p><div id="modes"></div>
+<div class="grid3"><div><label>Remise (EUR HT)</label><input id="remise" type="number" value="0"></div>
+<div><label>Acompte %</label><input id="acompte" type="number" value="30"></div>
+<div><label>Validite</label><input value="30 jours" readonly></div></div></div>
+<div class="card"><h2>3. Mes tarifs - Grille Loire 42 (HT, modifiables)</h2>
+<p class="muted">Prix par defaut Loire 42 - main-d'oeuvre HT. Modifie, puis clique sur Enregistrer.</p>
+<div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn" style="width:auto" onclick="appliquerLoire()">Appliquer la grille Loire 42</button>
+<button class="btn btn-ghost" style="width:auto" onclick="remettreZero()">Remettre a 0 EUR</button>
+<button class="btn btn-gold" style="width:auto" onclick="sauver()">Enregistrer mes tarifs</button></div>
+<div id="tarifs"></div><p id="msgTarif" class="ok"></p></div>
+<div class="card"><h2>4. Prestations - coche, quantite, prix</h2>
+<p class="muted">Seules les prestations cochees apparaitront dans le devis. Recherche : <input id="recherche" placeholder="Rechercher : faience, douche, terrasse..." oninput="render()"></p>
+<div class="forfait"><h3>FORFAIT SALLE DE BAIN COMPLETE - Anti double-facturation</h3>
+<p class="muted">Inclus : depose, preparation, SPEC murs + sol, pose sol + murs, joints, silicone. Quand il est active, les prestations incluses se verrouillent a 0 EUR.</p>
+<div id="forfaits"></div><p id="ctrlForfait" class="ok"></p>
+<label>Precision forfait</label><input id="forfaitNote" placeholder="Ex : SDB 5 m2, faience 25x50..."></div>
+<div id="familles"></div></div>
+<div class="card"><h2>5. Totaux</h2><div id="totaux"></div></div>
+<div class="card"><h2>6. Reserves et engagement qualite</h2>
+<label>Reserves sur l'etat du support</label><textarea id="reserves" rows="2">Sous reserve de l'etat reel du support constate a la depose. Toute reprise de support non visible au devis fera l'objet d'un avenant.</textarea>
+<label>Remarques</label><textarea id="remarques" rows="2"></textarea>
+<h3>ENGAGEMENT QUALITE - REGLES DE L'ART</h3>
+<p>Les travaux seront realises conformement aux regles de l'art, aux normes francaises et aux DTU applicables a la nature des travaux realises.</p>
+<h3>REFERENCES TECHNIQUES AUTOMATIQUES</h3><div id="dtu"></div></div>
+<div class="card"><h2>7. Apercu du devis</h2><button class="btn" onclick="apercu()">Generer l'apercu du devis</button><div id="apercu" style="margin-top:14px"></div>
+<button class="btn btn-ghost" onclick="nouveauDevis()">Nouveau devis (garde entreprise + tarifs)</button></div>
+</div>
+<script>
+var DATA=[
+["1. Preparation et renovation des supports",[["Depose ancien carrelage","m2",18],["Depose de faience murale","m2",20],["Depose de plinthes","ml",8],["Depose de colle / ragreage ancien","m2",12],["Nettoyage et preparation du support","m2",8],["Application de primaire d'accrochage","m2",4],["Ragreage / nivellement du sol","m2",18],["Ragreage fibre","m2",22],["Reparation ponctuelle du support","forfait",120],["Poncage du support","m2",12],["Rebouchage et reprise de planeite","forfait",90]]],
+["2. Chapes et formes de pente",[["Realisation de chape traditionnelle","m2",35],["Chape fluide / anhydrite - preparation","m2",28],["Forme de pente","m2",38],["Chape allegee","m2",42],["Pose de natte de desolidarisation","m2",28],["Pose de natte d'etancheite","m2",32]]],
+["3. Pose de carrelage et revetements",[["Pose de carrelage au sol","m2",38],["Pose de carrelage mural","m2",42],["Pose de faience","m2",48],["Pose de mosaique","m2",85],["Pose de galets","m2",75],["Pose de pierre naturelle","m2",65],["Pose de travertin","m2",60],["Pose de carreaux ciment","m2",55],["Pose de carrelage imitation parquet","m2",42],["Pose de carrelage grand format","m2",55],["Pose de carrelage tres grand format","m2",75],["Pose de carrelage sur ancien carrelage","m2",45],["Pose collee","m2",38],["Pose scellee","m2",55],["Pose en diagonale","m2",48],["Pose en chevrons","m2",70],["Pose avec cabochons","m2",65],["Pose avec calepinage personnalise","forfait",150],["Pose de plinthes","ml",12]]],
+["4. Decoupes et finitions",[["Decoupes specifiques","unite",15],["Decoupes a 45 degres / onglets","ml",18],["Realisation de chants polis","ml",22],["Percage pour tuyauterie","unite",18],["Decoupe pour prises electriques","unite",15],["Realisation de niches murales","unite",180],["Pose de profiles de finition","ml",10],["Pose de profiles d'angle","ml",12],["Pose de profiles de fractionnement","ml",10],["Pose de seuils de porte","unite",85],["Pose de barres de seuil","unite",45],["Pose de joints souples peripheriques","ml",8],["Jointoiement classique","m2",8],["Jointoiement epoxy","m2",18],["Jointoiement large","m2",12],["Traitement hydrofuge des joints","m2",6]]],
+["5. Escaliers",[["Habillage de marches","unite",65],["Habillage de contremarches","unite",35],["Pose de nez de marche","ml",22],["Pose de plinthes d'escalier","ml",15],["Habillage de paliers","m2",45],["Habillage de marches arrondies","unite",85],["Realisation de marches sur mesure","unite",120]]],
+["6. Salles de bain et douches",[["Pose d'un receveur a carreler","unite",350],["Pose d'un caniveau de douche","unite",280],["Pose d'une bonde de douche","unite",120],["Realisation de pentes de douche","forfait",350],["Habillage d'un tablier de baignoire","unite",280],["Habillage d'un bati-support WC","unite",320],["Habillage d'un meuble de salle de bain","unite",250],["Habillage d'une baignoire","unite",380],["Realisation d'une tablette de douche","unite",150],["Pose de niches de douche","unite",180],["Realisation de joints silicone sanitaires","ml",9],["Etancheite SPEC douche - murs","m2",28],["Etancheite SPEC douche - sol","m2",32]]],
+["7. Terrasses et exterieurs",[["Preparation d'un support exterieur","m2",10],["Realisation de pente exterieure","m2",38],["Pose de carrelage exterieur colle","m2",52],["Pose de dalles sur plots","m2",48],["Pose de dalles sur gravier","m2",38],["Pose de margelles de piscine","ml",38],["Pose de couvertines","ml",35],["Pose de nez de terrasse","ml",28],["Pose de plinthes exterieures","ml",14],["Traitement des evacuations d'eau","unite",120],["Realisation de joints exterieurs","m2",12]]],
+["8. Travaux annexes et services",[["Protection des sols existants","m2",4],["Protection des murs et menuiseries","forfait",120],["Deplacement du mobilier","forfait",120],["Manutention des materiaux","forfait",150],["Evacuation des gravats","m3",85],["Location de benne","unite",280],["Transport des materiaux","forfait",90],["Livraison du carrelage","forfait",90],["Fourniture du carrelage","m2",28],["Fourniture des plinthes","ml",12],["Fourniture des produits de pose","m2",15],["Nettoyage intermediaire","forfait",90],["Nettoyage de fin de chantier","forfait",150],["Intervention urgente","forfait",180]]]
+];
+var prix={}, coche={}, qte={}, mode="global", forfait=0;
+var INCLUS=["Depose de faience murale","Nettoyage et preparation du support","Application de primaire d'accrochage","Etancheite SPEC douche - murs","Etancheite SPEC douche - sol","Pose de carrelage au sol","Pose de faience","Jointoiement classique","Realisation de joints silicone sanitaires","Nettoyage de fin de chantier"];
+DATA.forEach(function(f){ f[1].forEach(function(it){ prix[it[0]]=it[2]; qte[it[0]]=1; coche[it[0]]=false; }); });
+function charger(){ try{ var s=JSON.parse(localStorage.getItem('devis42')||'{}'); if(s.prix){ prix=s.prix; } if(s.ent){ document.getElementById('ent').value=s.ent; } }catch(e){} }
+function sauver(){ localStorage.setItem('devis42', JSON.stringify({prix:prix, ent:document.getElementById('ent').value})); document.getElementById('msgTarif').textContent="Tarifs enregistres"; setTimeout(function(){ document.getElementById('msgTarif').textContent=""; },3000); }
+function appliquerLoire(){ DATA.forEach(function(f){ f[1].forEach(function(it){ prix[it[0]]=it[2]; }); }); render(); document.getElementById('msgTarif').textContent="Grille Loire 42 appliquee"; }
+function remettreZero(){ Object.keys(prix).forEach(function(k){ prix[k]=0; }); render(); }
+function fmt(n){ return (Number(n)||0).toLocaleString('fr-FR',{minimumFractionDigits:2,maximumFractionDigits:2})+" EUR"; }
+function isInclus(n){ return forfait>0 && INCLUS.indexOf(n)>=0; }
+function esc(n){ return n.split("'").join(""); }
+function renderModes(){ var h='<span class="pill '+(mode==="global"?"on":"")+'" onclick="mode=\'global\';renderModes();render();">Fourniture + pose (global)</span><span class="pill '+(mode==="mo"?"on":"")+'" onclick="mode=\'mo\';renderModes();render();">Main-d\'oeuvre seule</span><span class="pill '+(mode==="separe"?"on":"")+'" onclick="mode=\'separe\';renderModes();render();">Fourniture et main-d\'oeuvre separees</span>'; document.getElementById('modes').innerHTML=h; }
+function render(){
+ var q=(document.getElementById('recherche')?document.getElementById('recherche').value:"").toLowerCase();
+ var fh="";
+ [1800,2000,2500].forEach(function(v){ fh+='<span class="pill '+(forfait===v?"on":"")+'" onclick="forfait='+v+';render();calc()">'+v+' EUR HT</span>'; });
+ fh+='<span class="pill '+(forfait===0?"on":"")+'" onclick="forfait=0;render();calc()">Sans forfait</span>';
+ document.getElementById('forfaits').innerHTML=fh;
+ document.getElementById('ctrlForfait').textContent=forfait?("Controle anti-doublon : OK - Forfait "+forfait+" EUR, prestations incluses verrouillees a 0 EUR."): "";
+ var th="";
+ DATA.forEach(function(f){
+   th+="<h3>"+f[0]+"</h3><table>";
+   f[1].forEach(function(it){ th+="<tr><td>"+it[0]+"</td><td>"+it[1]+"</td><td><input type='number' value='"+prix[it[0]]+"' onchange=\"prix['"+esc(it[0])+"']=Number(this.value);calc()\"></td></tr>"; });
+   th+="</table>";
+ });
+ document.getElementById('tarifs').innerHTML=th;
+ var fam="";
+ DATA.forEach(function(f){
+   var lignes="";
+   f[1].forEach(function(it){
+     if(it[0].toLowerCase().indexOf(q)<0) return;
+     var locked=isInclus(it[0]);
+     var total=locked?0:(qte[it[0]]*prix[it[0]]);
+     lignes+="<div class='row "+(locked?"locked":"")+"'><input type='checkbox' "+(coche[it[0]]?"checked":"")+" "+(locked?"disabled":"")+" onchange=\"coche['"+esc(it[0])+"']=this.checked;calc()\"><div>"+it[0]+" "+(locked?"<span class='badge'>Inclus forfait - 0 EUR</span>":"")+"</div><input type='number' step='0.5' value='"+qte[it[0]]+"' onchange=\"qte['"+esc(it[0])+"']=Number(this.value);calc()\"><span>"+it[1]+"</span><b>"+fmt(total)+"</b></div>";
+   });
+   if(lignes){ fam+="<details open><summary>"+f[0]+"</summary>"+lignes+"</details>"; }
+ });
+ document.getElementById('familles').innerHTML=fam;
+ calc();
+}
+function calc(){
+ var sous=0; var lignes=[];
+ DATA.forEach(function(f){ f[1].forEach(function(it){ if(coche[it[0]] && !isInclus(it[0])){ var t=qte[it[0]]*prix[it[0]]; sous+=t; lignes.push([it[0],qte[it[0]],it[1],prix[it[0]],t]); } }); });
+ if(forfait>0) sous+=forfait;
+ var remise=Number(document.getElementById('remise').value||0); var ht=Math.max(0,sous-remise);
+ var tva=Number(document.getElementById('tva').value||0.10); var montTva=ht*tva; var ttc=ht+montTva; var ac=ttc*Number(document.getElementById('acompte').value||30)/100;
+ document.getElementById('totaux').innerHTML="<p>Sous-total HT : <b>"+fmt(sous)+"</b></p><p>Remise : - "+fmt(remise)+"</p><p>HT apres remise : <b>"+fmt(ht)+"</b></p><p>TVA : "+fmt(montTva)+"</p><p class='tot'>Total TTC : "+fmt(ttc)+"</p><p>Acompte : "+fmt(ac)+"</p>";
+ var d=[]; var noms=lignes.map(function(x){ return x[0]; });
+ var has=function(m){ return noms.some(function(n){ return n.indexOf(m)>=0; }); };
+ if(has("collee")||has("Pose de carrelage")||has("faience")||has("mosaique")||has("grand format")) d.push("NF DTU 52.2 - Pose collee");
+ if(has("scellee")) d.push("NF DTU 52.1 - Pose scellee");
+ if(has("SPEC")||has("douche")||has("receveur")||has("caniveau")||forfait>0) d.push("SPEC / Etancheite - Selon Avis Technique fabricant");
+ if(has("exterieur")||has("plots")||has("margelles")) d.push("NF DTU 52.2 + Regles terrasses exterieures");
+ if(has("Joint")||has("profile")) d.push("DTU - Joints et finitions");
+ if(has("Ragreage")||has("primaire")||has("chape")||has("Preparation")) d.push("Regles professionnelles - Preparation des supports");
+ var dh="";
+ if(d.length){ d.forEach(function(x){ dh+="<p>- "+x+"</p>"; }); } else { dh="<p>Aucune reference - Cochez au moins une prestation.</p>"; }
+ document.getElementById('dtu').innerHTML=dh;
+ return {lignes:lignes, sous:sous, ht:ht, montTva:montTva, ttc:ttc, ac:ac, d:d};
+}
+function apercu(){
+ var c=calc(); var client=document.getElementById('client').value||"A completer";
+ var rows="";
+ c.lignes.forEach(function(r){ rows+="<tr><td>"+r[0]+"</td><td>"+r[1]+" "+r[2]+"</td><td>"+fmt(r[3])+"</td><td>"+fmt(r[4])+"</td></tr>"; });
+ if(forfait>0) rows="<tr><td><b>Forfait Salle de Bain Complete</b><br><small>"+document.getElementById('forfaitNote').value+"</small></td><td>1 forfait</td><td>"+fmt(forfait)+"</td><td>"+fmt(forfait)+"</td></tr>"+rows;
+ var dh=""; c.d.forEach(function(x){ dh+="<p>- "+x+"</p>"; });
+ document.getElementById('apercu').innerHTML="<div style='border:2px solid #0B1B33;border-radius:12px;padding:16px;background:#fff'><h2>DEVIS - "+document.getElementById('num').value+"</h2><p>"+document.getElementById('ent').value+"<br>"+document.getElementById('adr').value+"<br>"+document.getElementById('tel').value+" - "+document.getElementById('email').value+" - SIRET "+document.getElementById('siret').value+"</p><p><b>Client :</b> "+client+"<br><b>Chantier :</b> "+(document.getElementById('chantier').value||"A completer")+"<br><b>Description :</b> "+document.getElementById('desc').value+"</p><table><tr><th>Prestation</th><th>Qte</th><th>PU HT</th><th>Total HT</th></tr>"+(rows||"<tr><td colspan=4>Aucune prestation cochee</td></tr>")+"</table><p style='text-align:right'>Sous-total HT "+fmt(c.sous)+"<br>HT apres remise "+fmt(c.ht)+"<br>TVA "+fmt(c.montTva)+"<br><b>Total TTC "+fmt(c.ttc)+"</b><br>Acompte "+fmt(c.ac)+"</p><h3>References techniques</h3>"+dh+"<h3>Reserves</h3><p>"+document.getElementById('reserves').value+"</p><p>"+document.getElementById('remarques').value+"</p><p>Signature client : ____ Signature artisan : ____</p><p>Prix indicatifs Loire (42) - A confirmer apres visite.</p></div>";
+}
+function nouveauDevis(){ Object.keys(coche).forEach(function(k){ coche[k]=false; }); forfait=0; document.getElementById('client').value=""; render(); }
+document.getElementById('date').value=new Date().toISOString().slice(0,10);
+charger(); renderModes(); render();
+</script></body></html>
